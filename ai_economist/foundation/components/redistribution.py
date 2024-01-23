@@ -146,7 +146,8 @@ class PeriodicBracketTax(BaseComponent):
         n_brackets=5,
         top_bracket_cutoff=100,
         usd_scaling=1000.0,
-        bracket_spacing="us-federal",
+        # bracket_spacing="us-federal",
+        bracket_spacing="dutch",
         fixed_bracket_rates=None,
         pareto_weight_type="inverse_income",
         saez_fixed_elas=None,
@@ -207,7 +208,7 @@ class PeriodicBracketTax(BaseComponent):
         assert self.usd_scale > 0
 
         self.bracket_spacing = bracket_spacing.lower()
-        assert self.bracket_spacing in ["linear", "log", "us-federal"]
+        assert self.bracket_spacing in ["linear", "log", "us-federal", "dutch"]
 
         if self.bracket_spacing == "linear":
             self.bracket_cutoffs = np.linspace(
@@ -227,15 +228,28 @@ class PeriodicBracketTax(BaseComponent):
                     ),
                 ]
             )
-        elif self.bracket_spacing == "us-federal":
+
+
+        elif self.bracket_spacing == "dutch":
             self.bracket_cutoffs = (
                 np.array([0, 38098, 75518])
                 / self.usd_scale
             )
             self.n_brackets = len(self.bracket_cutoffs)
             self.top_bracket_cutoff = float(self.bracket_cutoffs[-1])
+
+        elif self.bracket_spacing == "us-federal":
+            self.bracket_cutoffs = (
+                np.array([0, 9700, 39475, 84200, 160725, 204100, 510300])
+                / self.usd_scale
+            )
+            self.n_brackets = len(self.bracket_cutoffs)
+            self.top_bracket_cutoff = float(self.bracket_cutoffs[-1])
         else:
             raise NotImplementedError
+        
+
+
 
         self.bracket_edges = np.concatenate([self.bracket_cutoffs, [np.inf]])
         self.bracket_sizes = self.bracket_edges[1:] - self.bracket_edges[:-1]
@@ -378,7 +392,7 @@ class PeriodicBracketTax(BaseComponent):
         no limit
         $153,798 plus 37% of the amount over $510,300
         """
-        return [0.0932, 0.3697, 0.4950]
+        return [0.1, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
 
     # ------- fixed-bracket-rates
     @property
