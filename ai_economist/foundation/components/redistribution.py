@@ -229,7 +229,7 @@ class PeriodicBracketTax(BaseComponent):
             )
         elif self.bracket_spacing == "us-federal":
             self.bracket_cutoffs = (
-                np.array([0, 9700, 39475, 84200, 160725, 204100, 510300])
+                np.array([0, 38098, 75518])
                 / self.usd_scale
             )
             self.n_brackets = len(self.bracket_cutoffs)
@@ -378,7 +378,7 @@ class PeriodicBracketTax(BaseComponent):
         no limit
         $153,798 plus 37% of the amount over $510,300
         """
-        return [0.1, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+        return [0.0932, 0.3697, 0.4950]
 
     # ------- fixed-bracket-rates
     @property
